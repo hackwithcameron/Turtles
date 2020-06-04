@@ -11,35 +11,44 @@ class TurtleRace:
         self.screen_height = self.screen.window_height()
         self.players = []
         self.pen_size = 5
-        self.num_of_players = 6
+        self.num_of_players = 7
         self.turtle_spacing = self.screen_height / (self.num_of_players + 1)
         self.screen_top = self.screen_height / 2
-        self.locations = deque()
+        self.locations = []
         self.winner = ''
 
-        self.colors = deque(['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'grey'])
+        self.colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'grey']
 
     def run(self):
+        self.screen.clear()
         self.player()
         self.get_location()
         self.start()
         while not self.win():
             self.update()
         turtle.write(self.winner, False, 'center', font=('Arial', 24, 'normal'))
+        print('Press space bar to play again.')
+        self.screen.listen()
+        self.screen.onkey(TurtleRace().run, 'space')
+        return
 
     def start(self):
+        i = 0
         for player in self.players:
             player.pu()
-            player.goto(self.locations.popleft())
+            player.goto(self.locations[i])
             player.pd()
+            i += 1
 
     def player(self):
+        i = 0
         for player in range(self.num_of_players):
             player = turtle.Turtle()
             player.shape('turtle')
-            player.color(self.colors.popleft())
+            player.color(self.colors[i])
             player.pensize(self.pen_size)
             self.players.append(player)
+            i += 1
         return self.players
 
     def get_location(self):
@@ -60,14 +69,7 @@ class TurtleRace:
                 return True
 
 
-def run():
-    turtle.reset()
-    return TurtleRace().run()
-
-
 if __name__ == '__main__':
-    run()
-    print('Press space bar to play again.')
-    turtle.listen()
-    turtle.onkey(run, 'space')
+    TurtleRace().run()
+
     turtle.mainloop()
